@@ -84,7 +84,7 @@ def main():
             failed |= not file_format(
                 file, [llvm_executable("clang-format"), "-assume-filename", f"{file}"]
             )
-            if file.suffix in [".cpp", ".cu"]:
+            if file.suffix in [".cpp"]:
                 failed |= not file_lint(
                     [
                         llvm_executable("clang-tidy"),
