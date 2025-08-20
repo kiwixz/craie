@@ -27,7 +27,6 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 file(GLOB_RECURSE src RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "src/*")
-file(GLOB src_root RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.py")
 foreach (file IN LISTS src src_root)
     add_custom_command(OUTPUT "lint/${file}"
         COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/lint.py" "${CMAKE_CURRENT_SOURCE_DIR}/${file}"
