@@ -13,7 +13,6 @@ target_link_libraries(ui_ PUBLIC
 
 qt_add_qml_module(ui_
     URI craie
-    VERSION 1.0
     RESOURCE_PREFIX "qml"
     QML_FILES
         "main.qml"
