@@ -4,34 +4,34 @@ import QtQuick.Layouts
 import craie
 
 Pane {
-    RowLayout {
-        anchors.fill: parent
-        spacing: 10
-
+    SplitView {
         TextArea {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            SplitView.fillWidth: true
         }
 
         ColumnLayout {
-            Layout.maximumWidth: Math.max(parent.width / 5, implicitWidth)
+            spacing: 10
 
-            Label {
-                text: "System prompt"
-            }
-            TextArea {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.bottomMargin: 10
+            SplitView.preferredWidth: Math.max(parent.width / 4, implicitWidth)
+
+            ColumnLayout {
+                Label {
+                    text: "System prompt"
+                }
+                TextArea {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
             }
 
-            Label {
-                text: "Instructions"
-            }
-            TextArea {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.bottomMargin: 10
+            ColumnLayout {
+                Label {
+                    text: "Instructions"
+                }
+                TextArea {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
             }
 
             GridLayout {
