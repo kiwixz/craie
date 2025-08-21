@@ -1,8 +1,7 @@
 #pragma once
 
-#include <QImage>
 #include <QObject>
-#include <QtQmlIntegration/qqmlintegration.h>
+#include <QtQmlIntegration>
 
 namespace craie::ui {
 

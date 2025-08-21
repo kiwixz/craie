@@ -32,12 +32,13 @@ int main(int argc, char** argv) {
         QGuiApplication app{argc, argv};
         QQuickView window;
 
-        window.setResizeMode(QQuickView::SizeRootObjectToView);
-        window.resize(1280, 720);
-
-        window.setSource({"qrc:qml/craie/main.qml"});
+        window.setSource({"qrc:qt/qml/craie/main.qml"});
         if (window.status() != QQuickView::Ready)
             return 1;
+
+        window.setMinimumSize(window.initialSize());
+        window.setResizeMode(QQuickView::SizeRootObjectToView);
+        window.resize(1280, 720);
 
         window.show();
         return app.exec();
