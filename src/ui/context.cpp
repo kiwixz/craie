@@ -1,10 +1,10 @@
 #include "ui/context.hpp"
 
 #include <atomic>
-#include <cstddef>
-#include <string>
+#include <ranges>
 #include <thread>
 
+#include <boost/algorithm/string/replace.hpp>
 #include <QString>
 
 #include "common/assume.hpp"
@@ -15,6 +15,22 @@ bool Context::generating() const {
     return generating_.load(std::memory_order::relaxed) != Generating::no;
 }
 
+QString Context::systemPrompt() const {
+    return QString::fromStdString(generator_.system_prompt());
+}
+
+QString Context::instructions() const {
+    return QString::fromStdString(generator_.instructions());
+}
+
+QString Context::model() const {
+    return QString::fromStdString(generator_.model());
+}
+
+QString Context::assistantPrefix() const {
+    return QString::fromStdString(generator_.assistant_prefix());
+}
+
 int Context::contextSize() const {
     return generator_.context_size();
 }
@@ -23,12 +39,27 @@ double Context::temperature() const {
     return generator_.temperature();
 }
 
-QString Context::instructions() const {
-    return QString::fromStdString(generator_.instructions());
+void Context::setSystemPrompt(const QString& system_prompt) {
+    assume(!generating());
+    generator_.set_system_prompt(system_prompt.toStdString());
 }
 
-QString Context::systemPrompt() const {
-    return QString::fromStdString(generator_.system_prompt());
+void Context::setInstructions(const QString& instructions) {
+    assume(!generating());
+    generator_.set_instructions(instructions.toStdString());
+}
+
+void Context::setModel(const QString& model) {
+    assume(!generating());
+    generator_.set_model(model.toStdString());
+}
+
+void Context::setAssistantPrefix(const QString& assistant_prefix) {
+    assume(!generating());
+
+    std::string prefix = assistant_prefix.toStdString();
+    boost::replace_all(prefix, "\\n", "\n");
+    generator_.set_assistant_prefix(std::move(prefix));
 }
 
 void Context::setContextSize(int context_size) {
@@ -41,14 +72,8 @@ void Context::setTemperature(double temperature) {
     generator_.set_temperature(temperature);
 }
 
-void Context::setInstructions(const QString& instructions) {
-    assume(!generating());
-    generator_.set_instructions(instructions.toStdString());
-}
-
-void Context::setSystemPrompt(const QString& system_prompt) {
-    assume(!generating());
-    generator_.set_system_prompt(system_prompt.toStdString());
+std::vector<QString> Context::listModels() {
+    return generator_.list_models() | std::ranges::to<std::vector<QString>>();
 }
 
 void Context::startGenerating(QString text) {
@@ -59,8 +84,8 @@ void Context::startGenerating(QString text) {
 
     generating_thread_ = std::jthread{[this,
                                        text = std::move(text)] {
-        generator_.generate(text.toStdString(), [&](const std::string& text) {
-            emit generatedText(QString::fromStdString(text));
+        generator_.generate(text.toStdString(), [&](const std::string_view text) {
+            emit generatedText(QString::fromUtf8(text.data(), text.size()));
             return generating_.load(std::memory_order::relaxed) == Generating::yes;
         });
 

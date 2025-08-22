@@ -30,8 +30,9 @@ int main(int argc, char** argv) {
         });
 
         QGuiApplication app{argc, argv};
-        QQuickView window;
+        app.setOrganizationName("craie");
 
+        QQuickView window;
         window.setSource({"qrc:qt/qml/craie/main.qml"});
         if (window.status() != QQuickView::Ready)
             return 1;

@@ -18,16 +18,21 @@ public:
 
     bool generating() const;
 
+    Q_INVOKABLE QString systemPrompt() const;
+    Q_INVOKABLE QString instructions() const;
+    Q_INVOKABLE QString model() const;
+    Q_INVOKABLE QString assistantPrefix() const;
     Q_INVOKABLE int contextSize() const;
     Q_INVOKABLE double temperature() const;
-    Q_INVOKABLE QString instructions() const;
-    Q_INVOKABLE QString systemPrompt() const;
 
+    Q_INVOKABLE void setSystemPrompt(const QString& system_prompt);
+    Q_INVOKABLE void setInstructions(const QString& instructions);
+    Q_INVOKABLE void setModel(const QString& model);
+    Q_INVOKABLE void setAssistantPrefix(const QString& assistant_prefix);
     Q_INVOKABLE void setContextSize(int context_size);
     Q_INVOKABLE void setTemperature(double temperature);
-    Q_INVOKABLE void setInstructions(const QString& instructions);
-    Q_INVOKABLE void setSystemPrompt(const QString& system_prompt);
 
+    Q_INVOKABLE std::vector<QString> listModels();
     Q_INVOKABLE void startGenerating(QString text);
     Q_INVOKABLE void stopGenerating();
 

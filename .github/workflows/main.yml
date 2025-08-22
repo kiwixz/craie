@@ -18,7 +18,7 @@ jobs:
         apt-get update
         apt-get -y upgrade  \
           clang-format clang-tidy cmake g++ git ninja-build python3  \
-          libboost1.88-dev qml6-module-qtquick qt6-declarative-dev
+          libboost1.88-dev libboost-json1.88-dev qml6-module-qtquick qt6-declarative-dev
     - name: Checkout
       uses: actions/checkout@v4
     - name: Configure

@@ -1,3 +1,4 @@
+import QtCore
 import QtQml
 import QtQuick
 import QtQuick.Controls
@@ -12,7 +13,7 @@ SplitView {
         SplitView.fillWidth: true
 
         TextArea {
-            id: text
+            id: textInput
             wrapMode: TextArea.Wrap
 
             background: Rectangle {
@@ -41,7 +42,7 @@ SplitView {
                     text: "System prompt"
                 }
                 TextArea {
-                    id: systemPrompt
+                    id: systemPromptInput
                     text: Context.systemPrompt()
 
                     Layout.fillWidth: true
@@ -54,7 +55,7 @@ SplitView {
                     text: "Instructions"
                 }
                 TextArea {
-                    id: instructions
+                    id: instructionsInput
                     text: Context.instructions()
 
                     Layout.fillWidth: true
@@ -66,11 +67,29 @@ SplitView {
                 columns: 2
                 columnSpacing: 10
 
+                ComboBox {
+                    id: modelInput
+                    model: Context.listModels()
+
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                }
+
+                Label {
+                    text: "Assistant prefix"
+                }
+                TextField {
+                    id: assistantPrefixInput
+                    text: Context.assistantPrefix()
+
+                    Layout.fillWidth: true
+                }
+
                 Label {
                     text: "Context size"
                 }
                 SpinBox {
-                    id: contextSize
+                    id: contextSizeInput
                     to: 2 ** 31 - 1
                     value: Context.contextSize()
 
@@ -81,7 +100,7 @@ SplitView {
                     text: "Temperature"
                 }
                 SpinBoxReal {
-                    id: temperature
+                    id: temperatureInput
                     value: Context.temperature()
 
                     Layout.fillWidth: true
@@ -96,11 +115,13 @@ SplitView {
             if (Context.generating) {
                 Context.stopGenerating();
             } else {
-                Context.setContextSize(contextSize.value);
-                Context.setTemperature(temperature.value);
-                Context.setInstructions(instructions.text);
-                Context.setSystemPrompt(systemPrompt.text);
-                Context.startGenerating(text.text);
+                Context.setModel(modelInput.currentText);
+                Context.setAssistantPrefix(assistantPrefixInput.text);
+                Context.setContextSize(contextSizeInput.value);
+                Context.setTemperature(temperatureInput.value);
+                Context.setInstructions(instructionsInput.text);
+                Context.setSystemPrompt(systemPromptInput.text);
+                Context.startGenerating(textInput.text);
             }
         }
     }
@@ -108,8 +129,20 @@ SplitView {
     Connections {
         target: Context
 
-        function onGeneratedText(a) {
-            text.insert(text.length, a);
+        function onGeneratedText(text) {
+            textInput.insert(textInput.length, text);
         }
+    }
+
+    Settings {
+        id: settings
+
+        property string model
+        property alias assistantPrefix: assistantPrefixInput.text
+        property alias contextSize: contextSizeInput.value
+        property alias temperature: temperatureInput.value
+
+        Component.onCompleted: modelInput.currentIndex = modelInput.find(model)
+        Component.onDestruction: model = modelInput.currentText
     }
 }
