@@ -1,3 +1,5 @@
+import QtQml
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
@@ -6,7 +8,15 @@ import craie
 Pane {
     SplitView {
         TextArea {
+            id: text
+
             SplitView.fillWidth: true
+
+            BusyIndicator {
+                running: Context.generating
+
+                anchors.right: parent.right
+            }
         }
 
         ColumnLayout {
@@ -19,6 +29,9 @@ Pane {
                     text: "System prompt"
                 }
                 TextArea {
+                    id: systemPrompt
+                    Component.onCompleted: this.text = Context.systemPrompt
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
@@ -29,21 +42,61 @@ Pane {
                     text: "Instructions"
                 }
                 TextArea {
+                    id: instructions
+                    Component.onCompleted: this.text = Context.instructions
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
+
+                GridLayout {
+                    columns: 2
+                    columnSpacing: 10
+
+                    Label {
+                        text: "Context size"
+                    }
+                    SpinBox {
+                        id: contextSize
+                        to: 2 ** 31 - 1
+                        Component.onCompleted: this.value = Context.contextSize
+
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        text: "Temperature"
+                    }
+                    SpinBoxReal {
+                        id: temperature
+                        Component.onCompleted: this.value = Context.temperature
+
+                        Layout.fillWidth: true
+                    }
+                }
             }
+        }
 
-            GridLayout {
-                columns: 2
-                columnSpacing: 10
+        Shortcut {
+            sequence: "Ctrl+Return"
+            onActivated: {
+                if (Context.generating) {
+                    Context.stopGenerating();
+                } else {
+                    Context.contextSize = contextSize.value;
+                    Context.temperature = temperature.value;
+                    Context.instructions = instructions.text;
+                    Context.systemPrompt = systemPrompt.text;
+                    Context.startGenerating(text.text);
+                }
+            }
+        }
 
-                Label {
-                    text: "Temperature"
-                }
-                SpinBoxReal {
-                    Layout.fillWidth: true
-                }
+        Connections {
+            target: Context
+
+            function onGeneratedText(a) {
+                text.insert(text.length, a);
             }
         }
     }
