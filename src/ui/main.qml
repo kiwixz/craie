@@ -6,18 +6,24 @@ import QtQuick.Layouts
 import craie
 
 SplitView {
-    TextArea {
-        id: text
-        background: Rectangle {
-            color: parent.palette.base
-        }
+    ScrollView {
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOff
 
         SplitView.fillWidth: true
 
-        BusyIndicator {
-            running: Context.generating
+        TextArea {
+            id: text
+            wrapMode: TextArea.Wrap
 
-            anchors.right: parent.right
+            background: Rectangle {
+                color: parent.palette.base
+            }
+
+            BusyIndicator {
+                running: Context.generating
+
+                anchors.right: parent.right
+            }
         }
     }
 
