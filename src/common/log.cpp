@@ -5,9 +5,8 @@
 #include <string>
 #include <string_view>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <unistd.h>
-
-#include "common/iequal.hpp"
 
 namespace craie::log {
 namespace {
@@ -42,13 +41,13 @@ void format_level(std::string& buf, Level level) {
 Level& verbosity_mutable() {
     static Level r = [] {
         if (const char* env = std::getenv("LOGLEVEL"); env) {
-            if (iequal(env, "trace"))
+            if (boost::iequals(env, "trace"))
                 return Level::trace;
-            if (iequal(env, "debug"))
+            if (boost::iequals(env, "debug"))
                 return Level::debug;
-            if (iequal(env, "warning"))
+            if (boost::iequals(env, "warning"))
                 return Level::warning;
-            if (iequal(env, "error"))
+            if (boost::iequals(env, "error"))
                 return Level::error;
         }
         return Level::info;
