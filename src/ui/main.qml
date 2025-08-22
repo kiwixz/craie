@@ -36,7 +36,7 @@ SplitView {
                 }
                 TextArea {
                     id: systemPrompt
-                    Component.onCompleted: this.text = Context.systemPrompt
+                    text: Context.systemPrompt()
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -49,7 +49,7 @@ SplitView {
                 }
                 TextArea {
                     id: instructions
-                    Component.onCompleted: this.text = Context.instructions
+                    text: Context.instructions()
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -66,7 +66,7 @@ SplitView {
                 SpinBox {
                     id: contextSize
                     to: 2 ** 31 - 1
-                    Component.onCompleted: this.value = Context.contextSize
+                    value: Context.contextSize()
 
                     Layout.fillWidth: true
                 }
@@ -76,7 +76,7 @@ SplitView {
                 }
                 SpinBoxReal {
                     id: temperature
-                    Component.onCompleted: this.value = Context.temperature
+                    value: Context.temperature()
 
                     Layout.fillWidth: true
                 }
@@ -90,10 +90,10 @@ SplitView {
             if (Context.generating) {
                 Context.stopGenerating();
             } else {
-                Context.contextSize = contextSize.value;
-                Context.temperature = temperature.value;
-                Context.instructions = instructions.text;
-                Context.systemPrompt = systemPrompt.text;
+                Context.setContextSize(contextSize.value);
+                Context.setTemperature(temperature.value);
+                Context.setInstructions(instructions.text);
+                Context.setSystemPrompt(systemPrompt.text);
                 Context.startGenerating(text.text);
             }
         }

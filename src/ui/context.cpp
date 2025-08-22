@@ -15,7 +15,7 @@ bool Context::generating() const {
     return generating_.load(std::memory_order::relaxed) != Generating::no;
 }
 
-int Context::context_size() const {
+int Context::contextSize() const {
     return generator_.context_size();
 }
 
@@ -27,26 +27,26 @@ QString Context::instructions() const {
     return QString::fromStdString(generator_.instructions());
 }
 
-QString Context::system_prompt() const {
+QString Context::systemPrompt() const {
     return QString::fromStdString(generator_.system_prompt());
 }
 
-void Context::set_context_size(int context_size) {
+void Context::setContextSize(int context_size) {
     assume(!generating());
     generator_.set_context_size(context_size);
 }
 
-void Context::set_temperature(double temperature) {
+void Context::setTemperature(double temperature) {
     assume(!generating());
     generator_.set_temperature(temperature);
 }
 
-void Context::set_instructions(const QString& instructions) {
+void Context::setInstructions(const QString& instructions) {
     assume(!generating());
     generator_.set_instructions(instructions.toStdString());
 }
 
-void Context::set_system_prompt(const QString& system_prompt) {
+void Context::setSystemPrompt(const QString& system_prompt) {
     assume(!generating());
     generator_.set_system_prompt(system_prompt.toStdString());
 }
